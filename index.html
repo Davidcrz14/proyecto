@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --purple-pastel: #8e44ad;
+            --blue-pastel: #3498db;
+            --red-pastel: #e74c3c;
+            --dark-bg: #121212;
+            --sidebar-bg: #1e1e1e;
+            --chat-bg: #2a2a2a;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+        }
+        .gradient-text {
+            background: linear-gradient(45deg, var(--purple-pastel), var(--blue-pastel), var(--red-pastel));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .message-bubble {
+            max-width: 70%;
+            border-radius: 18px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .message-bubble.sent {
+            background-color: var(--blue-pastel);
+            align-self: flex-end;
+        }
+        .message-bubble.received {
+            background-color: #2c3e50;
+            align-self: flex-start;
+        }
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            transform: translateX(5px);
+        }
+        .channel-item {
+            transition: all 0.3s ease;
+        }
+        .channel-item:hover {
+            transform: translateX(5px);
+        }
+        .input-animation {
+            transition: all 0.3s ease;
+        }
+        .input-animation:focus {
+            transform: scale(1.02);
+        }
+        .send-button {
+            transition: all 0.3s ease;
+        }
+        .send-button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-1/4 p-4 hidden md:block bg-sidebar-bg">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold gradient-text" id="logo">POE Chat</h1>
+            </div>
+            <nav class="mb-8">
+                <ul class="space-y-3">
+                    <li><a href="#" class="flex items-center text-lg hover:text-purple-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="home" class="mr-3"></i> Inicio</a></li>
+                    <li><a href="#" class="flex items-center text-lg hover:text-blue-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="users" class="mr-3"></i> Canales</a></li>
+                    <li><a href="#" class="flex items-center text-lg hover:text-red-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="bell" class="mr-3"></i> Notificaciones</a></li>
+                    <li><a href="#" class="flex items-center text-lg hover:text-purple-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="user" class="mr-3"></i> Perfil</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main chat area -->
+        <main class="w-full md:w-1/2 flex flex-col border-x border-gray-800 bg-chat-bg">
+            <!-- Chat header -->
+            <div class="bg-sidebar-bg p-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center">
+                    <h2 class="font-semibold text-xl">#General</h2>
+                    <span class="ml-3 text-sm text-gray-400">42 miembros</span>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="hover:bg-gray-700 p-2 rounded-full transition-colors duration-300"><i data-feather="search"></i></button>
+                    <button class="hover:bg-gray-700 p-2 rounded-full transition-colors duration-300"><i data-feather="more-vertical"></i></button>
+                </div>
+            </div>
+
+            <!-- Chat messages -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-4" id="chat-messages">
+                <div class="message-bubble received">
+                    <p class="text-sm font-semibold mb-1">Usuario1</p>
+                    <p>callense vrg dejen dormir</p>
+                </div>
+                <div class="message-bubble sent">
+                    <p class="text-sm font-semibold mb-1">Tú</p>
+                    <p>saquen coito</p>
+                </div>
+                <div class="message-bubble received">
+                    <p class="text-sm font-semibold mb-1">Usuario2</p>
+                    <p>uwu?</p>
+                </div>
+            </div>
+
+            <!-- Message input -->
+            <div class="p-4 border-t border-gray-700">
+                <div class="flex items-center bg-sidebar-bg rounded-full shadow-inner">
+                    <input type="text" id="message-input" class="flex-grow bg-transparent p-3 focus:outline-none input-animation" placeholder="Escribe un mensaje...">
+                    <button id="send-button" class="p-3 text-blue-400 hover:text-blue-300 transition-colors duration-300 send-button"><i data-feather="send"></i></button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right sidebar -->
+        <aside class="w-1/4 p-4 hidden lg:block bg-sidebar-bg">
+            <div class="bg-chat-bg rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="font-semibold mb-3 text-xl">Miembros en línea</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> Usuario1</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> Usuario2</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> Usuario3</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-gray-500 rounded-full mr-3"></span> Usuario4 (ausente)</li>
+                </ul>
+            </div>
+            <div class="bg-chat-bg rounded-lg p-4 shadow-lg">
+                <h2 class="font-semibold mb-3 text-xl">Archivos compartidos</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center"><i data-feather="file" class="mr-3"></i> documento.pdf</li>
+                    <li class="flex items-center"><i data-feather="image" class="mr-3"></i> imagen.jpg</li>
+                    <li class="flex items-center"><i data-feather="film" class="mr-3"></i> video.mp4</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        feather.replace();
+
+        gsap.to("#logo", {duration: 2, opacity: 1, y: 0, ease: "elastic.out(1, 0.3)", delay: 0.5});
+
+        gsap.from(".sidebar-item", {duration: 1, opacity: 0, x: -50, stagger: 0.2, ease: "power3.out", delay: 1});
+
+        gsap.from(".channel-item", {duration: 1, opacity: 0, x: -30, stagger: 0.1, ease: "power2.out", delay: 1.5});
+
+        gsap.to(".message-bubble", {duration: 0.5, opacity: 1, y: 0, stagger: 0.1, ease: "power2.out", delay: 2});
+
+        // Modified animation for the input field
+        gsap.from("#message-input", {duration: 1, opacity: 1, y: 20, ease: "power3.out", delay: 2.5});
+
+        gsap.from(".send-button", {duration: 1, opacity: 0, scale: 0.5, ease: "elastic.out(1, 0.3)", delay: 3});
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            if (message) {
+                const chatMessages = document.getElementById('chat-messages');
+                const newMessage = document.createElement('div');
+                newMessage.className = 'message-bubble sent';
+                newMessage.innerHTML = `
+                    <p class="text-sm font-semibold mb-1">Tú</p>
+                    <p>${message}</p>
+                `;
+                chatMessages.appendChild(newMessage);
+                input.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Animación para el nuevo mensaje
+                gsap.from(newMessage, {duration: 0.5, opacity: 0, y: 20, ease: "power2.out"});
+            }
+        }
+
+        // Event listeners para enviar mensaje
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        feather.replace();
+    </script>
+</body>
+</html>

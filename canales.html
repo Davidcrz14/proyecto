@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canales - POE Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --purple-pastel: #8e44ad;
+            --blue-pastel: #3498db;
+            --red-pastel: #e74c3c;
+            --dark-bg: #121212;
+            --sidebar-bg: #1e1e1e;
+            --chat-bg: #2a2a2a;
+            --text-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+        }
+        .gradient-text {
+            background: linear-gradient(45deg, var(--purple-pastel), var(--blue-pastel), var(--red-pastel));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            transform: translateX(5px);
+        }
+        .channel-item {
+            transition: all 0.3s ease;
+        }
+        .channel-item:hover {
+            transform: translateX(5px);
+        }
+        .explore-channel {
+            transition: all 0.3s ease;
+        }
+        .explore-channel:hover {
+            transform: scale(1.05);
+        }
+        input, textarea {
+            background-color: var(--chat-bg);
+            color: var(--text-color);
+            border: 1px solid #4a4a4a;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #888;
+        }
+        button {
+            background-color: var(--blue-pastel);
+            color: var(--dark-bg);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-1/4 p-4 hidden md:block bg-sidebar-bg">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold gradient-text" id="logo">POE Chat</h1>
+            </div>
+            <nav class="mb-8">
+                <ul class="space-y-3">
+                    <li><a href="#" class="flex items-center text-lg hover:text-purple-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="home" class="mr-3"></i> Inicio</a></li>
+                    <li><a href="#" class="flex items-center text-lg text-blue-300 sidebar-item p-2"><i data-feather="users" class="mr-3"></i> Canales</a></li>
+                    <li><a href="#" class="flex items-center text-lg hover:text-red-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="bell" class="mr-3"></i> Notificaciones</a></li>
+                    <li><a href="#" class="flex items-center text-lg hover:text-purple-300 transition-colors duration-300 sidebar-item p-2"><i data-feather="user" class="mr-3"></i> Perfil</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main channels area -->
+        <main class="w-full md:w-1/2 flex flex-col border-x border-gray-800 bg-chat-bg">
+            <!-- Channels header -->
+            <div class="bg-sidebar-bg p-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center">
+                    <h2 class="font-semibold text-xl">Canales</h2>
+                    <span class="ml-3 text-sm text-gray-400">Explora y únete</span>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="hover:bg-gray-700 p-2 rounded-full transition-colors duration-300"><i data-feather="search"></i></button>
+                    <button class="hover:bg-gray-700 p-2 rounded-full transition-colors duration-300"><i data-feather="plus"></i></button>
+                </div>
+            </div>
+
+            <!-- Channels content -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-6">
+                <div class="bg-sidebar-bg rounded-lg p-4 shadow-lg" id="popular-channels">
+                    <h3 class="text-xl font-semibold mb-4">Canales populares</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between channel-item">
+                            <div class="flex items-center">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                <span>#Sex</span>
+                            </div>
+                            <span class="text-gray-400">1.2k miembros</span>
+                        </li>
+                        <li class="flex items-center justify-between channel-item">
+                            <div class="flex items-center">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                <span>#chat de rol</span>
+                            </div>
+                            <span class="text-gray-400">856 miembros</span>
+                        </li>
+                        <li class="flex items-center justify-between channel-item">
+                            <div class="flex items-center">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                                <span>#Furros</span>
+                            </div>
+                            <span class="text-gray-400">723 miembros</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-sidebar-bg rounded-lg p-4 shadow-lg" id="your-channels">
+                    <h3 class="text-xl font-semibold mb-4">Tus canales</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between channel-item">
+                            <div class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                <span>#DavC-X</span>
+                            </div>
+                            <span class="text-gray-400">12 miembros</span>
+                        </li>
+                        <li class="flex items-center justify-between channel-item">
+                            <div class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                <span>#poe</span>
+                            </div>
+                            <span class="text-gray-400">8 miembros</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-sidebar-bg rounded-lg p-4 shadow-lg" id="explore-channels">
+                    <h3 class="text-xl font-semibold mb-4">Explorar canales</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-chat-bg p-4 rounded-lg explore-channel">
+                            <h4 class="font-semibold">#anime</h4>
+                            <p class="text-gray-400 text-sm">discutimos sobre anime y manga</p>
+                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors duration-200">Unirse</button>
+                        </div>
+                        <div class="bg-chat-bg p-4 rounded-lg explore-channel">
+                            <h4 class="font-semibold">#hentai</h4>
+                            <p class="text-gray-400 text-sm">discutimos sobre hentai y porno</p>
+                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors duration-200">Unirse</button>
+                        </div>
+                        <div class="bg-chat-bg p-4 rounded-lg explore-channel">
+                            <h4 class="font-semibold">#waifus</h4>
+                            <p class="text-gray-400 text-sm">noticias sobre waifus de todo el mundo</p>
+                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors duration-200">Unirse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right sidebar -->
+        <aside class="w-1/4 p-4 hidden lg:block bg-sidebar-bg">
+            <div class="bg-chat-bg rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="font-semibold mb-3 text-xl">Canales recomendados</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> #tecnología</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> #gaming</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> #música</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> #arte</li>
+                </ul>
+            </div>
+            <div class="bg-chat-bg rounded-lg p-4 shadow-lg">
+                <h2 class="font-semibold mb-3 text-xl">Actividad reciente</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center"><i data-feather="user-plus" class="mr-3"></i> Usuario5 se unió a #anime</li>
+                    <li class="flex items-center"><i data-feather="message-square" class="mr-3"></i> Nuevo mensaje en #poe</li>
+                    <li class="flex items-center"><i data-feather="star" class="mr-3"></i> #gaming es tendencia</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        feather.replace();
+
+        gsap.to("#logo", {duration: 2, opacity: 1, y: 0, ease: "elastic.out(1, 0.3)", delay: 0.5});
+
+        gsap.from("#popular-channels", {duration: 0.5, opacity: 0, y: 20, ease: "power2.out", delay: 1.5});
+        gsap.from("#your-channels", {duration: 0.5, opacity: 0, y: 20, ease: "power2.out", delay: 1.7});
+        gsap.from("#explore-channels", {duration: 0.5, opacity: 0, y: 20, ease: "power2.out", delay: 1.9});
+
+        gsap.from(".channel-item", {duration: 0.5, opacity: 0, x: -20, stagger: 0.1, ease: "power2.out", delay: 2.1});
+        gsap.from(".explore-channel", {duration: 0.5, opacity: 0, scale: 0.9, stagger: 0.1, ease: "power2.out", delay: 2.3});
+    </script>
+</body>
+</html>
